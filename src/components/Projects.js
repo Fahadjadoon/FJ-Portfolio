@@ -7,42 +7,104 @@ const projectsData = [
   {
     id: "01",
     title: "Scriptovate",
-    category: "AI-Powered Script Writing Platform",
-    shortDesc: "A collaborative platform for writing, organizing, and enhancing scripts with AI assistance.",
-    longDesc: "Scriptovate is a modern web application built for writers, filmmakers, and creative teams. Users can write and organize scripts, create and manage characters, keep project notes, collaborate with team members in real time, and leverage AI to generate ideas, improve dialogue, and accelerate the writing process. Built with a scalable architecture using Next.js, Python, FastAPI, and PostgreSQL, the platform delivers a fast and seamless creative workflow.",
+    category: "AI-Powered Scriptwriting Platform",
+    shortDesc: "An AI-assisted collaborative platform featuring a structured interactive editor and real-time co-authoring tools.",
+    longDesc: "Scriptovate is a specialized web application engineered for creative teams, screenwriters, and content creators. The platform features an interactive rich text editor integrated with real-time collaboration engines, customizable script formatting, and generative AI capabilities to brainstorm scenes, enhance dialogue, and accelerate the writing process. Built with Next.js, FastAPI, and PostgreSQL to deliver fluid frontend responsiveness and low-latency API handling.",
     tags: [
-      "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "Tailwind CSS" ],
+      "Next.js", "React", "Python", "FastAPI", "PostgreSQL", "Tailwind CSS", "AI Integration"
+    ],
     demoUrl: "#",
     githubUrl: "#",
     images: [
-      "/projects/SC-1.png",
-      "/projects/SC-2.png",
-      "/projects/SC-3.png"
+      "/projects/Scriptovate -1.png",
+      "/projects/Scriptovate -2.png",
+      "/projects/Scriptovate -3.png",
+      "/projects/Scriptovate -4.png",
+      "/projects/Scriptovate -5.png",
+      "/projects/Scriptovate -6.png",
+      "/projects/Scriptovate -7.png"
     ]
   },
   {
     id: "02",
     title: "Cerebro",
-    category: "Custom AI Agent Platform",
-    shortDesc: "A platform for building, training, and deploying AI agents across websites and WhatsApp.",
-    longDesc: "Cerebro enables users to create intelligent AI agents tailored to their own knowledge base. Users can train agents by uploading documents and learning materials, interact with them through a real-time chat powered by WebSockets, and deploy them as customer support assistants on websites or WhatsApp. Built with Next.js, Shadcn UI, Python, and FastAPI, the platform delivers responsive performance, scalable AI workflows, and seamless multi-channel communication.",
+    category: "Real-Time AI Agent Platform",
+    shortDesc: "Deploy custom AI agents with WebSocket stream communication and persistent multi-channel memory.",
+    longDesc: "Cerebro allows users to build, train, and deploy customized AI agents using their own domain knowledge bases. Built around real-time WebSocket communication, it supports low-latency streaming interactions, persistent chat history retention, and seamless multi-channel deployment (including embeddable website widgets and WhatsApp). Developed with Next.js and Shadcn UI on the frontend paired with FastAPI microservices.",
     tags: [
-      "Next.js", "React", "Shadcn UI", "Python", "FastAPI", "WebSockets","AI", "WhatsApp Integration" ],
+      "Next.js", "React", "Shadcn UI", "Python", "FastAPI", "WebSockets", "AI Agents", "WhatsApp API"
+    ],
     demoUrl: "#",
     githubUrl: "#",
     images: [
-      "/projects/vector-1.jpg",
-      "/projects/vector-2.jpg",
-      "/projects/vector-3.jpg"
+      "/projects/Cerebro-11.png",
+      "/projects/Cerebro-22.png",
+      "/projects/Cerebro-33.png",
+      "/projects/Cerebro-44.png"
     ]
   },
   {
     id: "03",
-    title: "Shop",
-    category: " Multi-Store E-Commerce Platform ",
-    shortDesc: "A modern e-commerce platform that lets users create and manage multiple online stores from a single dashboard.",
-    longDesc: "Shop is a scalable multi-store e-commerce application where users can create and manage multiple online stores, each with its own inventory, products, shopping cart, and store settings. The platform provides a clean, intuitive interface that simplifies store management while delivering a seamless shopping experience. Built with React.js, Python, and FastAPI, it combines modern UI design with a robust backend to support efficient and customizable online businesses.",
-    tags: ["React.js", "Redux", "Python", "FastAPI", "REST API", "Google AUTH", "E-Commerce" ],
+    title: "SaaS Marketplace",
+    category: "Multi-Vendor B2B2C Architecture",
+    shortDesc: "A secure multi-tenant B2B2C marketplace with tenant database isolation and real-time automated Stripe payments.",
+    longDesc: "Architected as a multi-vendor B2B2C platform, this project solves key multi-tenancy challenges by implementing database isolation across vendors, real-time order processing pipelines, and automated payout splits via Stripe integration. Built to deliver strong data security boundaries, sub-second API response times, and high transaction reliability.",
+    tags: [
+      "Next.js", "React", "TypeScript", "FastAPI", "Stripe API", "PostgreSQL", "Tailwind CSS"
+    ],
+    demoUrl: "#",
+    githubUrl: "#",
+    images: [
+      "/projects/saas-1.png",
+      "/projects/saas-2.png",
+      "/projects/saas-3.png",
+      "/projects/saas-4.png"
+    ]
+  },
+  {
+    id: "04",
+    title: "CRM Kanban",
+    category: "Real-Time Project Workflow",
+    shortDesc: "A workflow management tool featuring interactive drag-and-drop boards, Firebase auth, and customizable funnels.",
+    longDesc: "CRM Kanban is a streamlined project and lead management dashboard. Built with an intuitive drag-and-drop user interface for fluid card movement across custom sales or development funnels. Features full Google Authentication via Firebase, multi-project context switching, and real-time state sync across teams.",
+    tags: [
+      "React.js", "Firebase", "Google Auth", "Framer Motion", "Tailwind CSS", "REST API"
+    ],
+    demoUrl: "#",
+    githubUrl: "#",
+    images: [
+      "/projects/kanban-1.jpg",
+      "/projects/kanban-2.png"
+    ]
+  },
+  {
+    id: "05",
+    title: "Knowledge Base AI",
+    category: "AI Knowledge Retrieval Platform",
+    shortDesc: "An enterprise documentation hub pairing categorical search filtering with AI-assisted answers.",
+    longDesc: "Designed to eliminate internal documentation friction, this platform integrates structured category filtering, fast full-text article search, and a contextual AI assistant. Users can query vast documentation sets via an interactive chat interface to receive instant, direct answers grounded in their organization's knowledge base.",
+    tags: [
+      "Next.js", "TypeScript", "Python", "FastAPI", "PostgreSQL", "Tailwind CSS", "AI Search"
+    ],
+    demoUrl: "#",
+    githubUrl: "#",
+    images: [
+      "/projects/kb-1.png",
+      "/projects/kb-22.png",
+      "/projects/kb-333.png",
+      "/projects/kb-44.png"
+    ]
+  },
+  /*
+  {
+    id: "03",
+    title: "SHOP",
+    category: "Multi-Store E-Commerce Platform",
+    shortDesc: "A multi-tenant e-commerce platform powering centralized inventory management across multiple storefronts.",
+    longDesc: "SHOP is a full-stack e-commerce architecture enabling merchants to provision and manage multiple distinct digital storefronts through a unified administrative panel. Features comprehensive Redux state management for cart state and global inventory synchronization, Google OAuth authentication, and scalable backend REST API integrations designed for multi-store retail expansion.",
+    tags: [
+      "React.js", "Redux", "Python", "FastAPI", "REST APIs", "Google Auth", "Tailwind CSS"
+    ],
     demoUrl: "#",
     githubUrl: "#",
     images: [
@@ -50,7 +112,7 @@ const projectsData = [
       "/projects/telemetry-2.jpg",
       "/projects/telemetry-3.jpg"
     ]
-  }
+  }*/
 ];
 
 export default function Projects() {
