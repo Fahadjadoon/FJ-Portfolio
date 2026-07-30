@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image"; // Upgraded to utilize optimized image streams
+import Image from "next/image";
 
 export default function TechStack() {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,7 +9,6 @@ export default function TechStack() {
     setIsVisible(true);
   }, []);
 
-  // Re-engineered orbit arrays exchanging raw string emojis for local asset path routing targets
   const orbits = [
     {
       size: 700,
@@ -53,15 +52,21 @@ export default function TechStack() {
   return (
     <section id="tech-stack" className="min-h-screen bg-transparent flex items-center justify-center relative overflow-hidden">
       
-      {/* Purple ambient glow behind the solar system */}
+      {/* Purple ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-purple-200/20 rounded-full blur-3xl" />
       
-      <div className="text-center relative z-10 py-20">
-        <h2 className="text-3xl sm:text-4xl font-black text-black mb-16 tracking-tight uppercase">
+      <div className="text-center relative z-10 py-10 w-full">
+        {/* Adjusted margin-bottom from mb-16 to mb-8 on mobile, mb-16 on desktop */}
+        <h2 className="text-3xl sm:text-4xl font-black text-black mb-8 sm:mb-16 tracking-tight uppercase">
           Tech <span className="text-purple-600">Stack</span>
         </h2>
 
-        <div className="relative flex items-center justify-center min-h-[850px]">
+        {/* 
+           RESPONSIVE CONTAINER:
+           Adjusted min-height: 400px for mobile, 600px for tablets, 850px for desktop.
+           The scaling remains to ensure the animation fits the width.
+        */}
+        <div className="relative flex items-center justify-center min-h-[400px] sm:min-h-[600px] lg:min-h-[850px] w-full origin-center scale-[0.45] sm:scale-[0.65] md:scale-[0.8] lg:scale-100 transition-transform duration-500">
           
           {/* Orbit 1 - Outer */}
           <div 
@@ -73,7 +78,6 @@ export default function TechStack() {
             }}
           />
           
-          {/* Planets for Orbit 1 */}
           <div className="absolute" style={{ width: `${orbits[0].size}px`, height: `${orbits[0].size}px` }}>
             {orbits[0].planets.map((planet, idx) => (
               <div
@@ -90,9 +94,6 @@ export default function TechStack() {
                     className="object-contain w-full h-full"
                   />
                 </div>
-                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-black text-white text-[10px] uppercase tracking-wider rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                  {planet.name}
-                </span>
               </div>
             ))}
           </div>
@@ -107,7 +108,6 @@ export default function TechStack() {
             }}
           />
           
-          {/* Planets for Orbit 2 */}
           <div className="absolute" style={{ width: `${orbits[1].size}px`, height: `${orbits[1].size}px` }}>
             {orbits[1].planets.map((planet, idx) => (
               <div
@@ -124,9 +124,6 @@ export default function TechStack() {
                     className="object-contain w-full h-full"
                   />
                 </div>
-                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-black text-white text-[10px] uppercase tracking-wider rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                  {planet.name}
-                </span>
               </div>
             ))}
           </div>
@@ -141,7 +138,6 @@ export default function TechStack() {
             }}
           />
           
-          {/* Planets for Orbit 3 */}
           <div className="absolute" style={{ width: `${orbits[2].size}px`, height: `${orbits[2].size}px` }}>
             {orbits[2].planets.map((planet, idx) => (
               <div
@@ -158,9 +154,6 @@ export default function TechStack() {
                     className="object-contain w-full h-full"
                   />
                 </div>
-                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-black text-white text-[10px] uppercase tracking-wider rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
-                  {planet.name}
-                </span>
               </div>
             ))}
           </div>
@@ -172,23 +165,11 @@ export default function TechStack() {
         </div>
       </div>
 
-      {/* Animation Keyframes */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes rotateLeft {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(-360deg); }
-        }
-        @keyframes rotateRight {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes bounceSlow {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
-        }
-        .animate-bounce-slow {
-          animation: bounceSlow 2s ease-in-out infinite;
-        }
+        @keyframes rotateLeft { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+        @keyframes rotateRight { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes bounceSlow { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        .animate-bounce-slow { animation: bounceSlow 2s ease-in-out infinite; }
       `}} />
     </section>
   );

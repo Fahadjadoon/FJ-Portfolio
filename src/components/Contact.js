@@ -142,7 +142,7 @@ export default function Contact() {
           <div className="grid grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="space-y-1.5">
               <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">Direct Communication</h4>
-              <a href="mailto:hello@yourdomain.com" className="text-xs font-medium text-neutral-600 hover:text-purple-600 transition-colors block">
+              <a href="mailto:" className="text-xs font-medium text-neutral-600 hover:text-purple-600 transition-colors block">
                 hello@yourdomain.com
               </a>
             </div>

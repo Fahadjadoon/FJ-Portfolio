@@ -7,11 +7,12 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen">
+    // Changed flex-col for mobile, lg:flex-row for desktop
+    <div className="flex flex-col lg:flex-row min-h-screen">
       <Navbar />
 
-      {/* Main Content */}
-      <div className="flex-1 ml-20">
+      {/* Main Content: Removed ml-20 on mobile, added lg:ml-20 for desktop */}
+      <div className="flex-1 lg:ml-20">
         <section id="home">
           <Hero />
         </section>

@@ -94,25 +94,7 @@ const projectsData = [
       "/projects/kb-333.png",
       "/projects/kb-44.png"
     ]
-  },
-  /*
-  {
-    id: "03",
-    title: "SHOP",
-    category: "Multi-Store E-Commerce Platform",
-    shortDesc: "A multi-tenant e-commerce platform powering centralized inventory management across multiple storefronts.",
-    longDesc: "SHOP is a full-stack e-commerce architecture enabling merchants to provision and manage multiple distinct digital storefronts through a unified administrative panel. Features comprehensive Redux state management for cart state and global inventory synchronization, Google OAuth authentication, and scalable backend REST API integrations designed for multi-store retail expansion.",
-    tags: [
-      "React.js", "Redux", "Python", "FastAPI", "REST APIs", "Google Auth", "Tailwind CSS"
-    ],
-    demoUrl: "#",
-    githubUrl: "#",
-    images: [
-      "/projects/telemetry-1.jpg",
-      "/projects/telemetry-2.jpg",
-      "/projects/telemetry-3.jpg"
-    ]
-  }*/
+  }
 ];
 
 export default function Projects() {
@@ -125,7 +107,7 @@ export default function Projects() {
   }, [activeProject]);
 
   return (
-    <section id="projects" className="min-h-screen bg-transparent w-full flex flex-col justify-center relative overflow-hidden py-32 px-6 sm:px-12 lg:px-24 z-10">
+    <section id="projects" className="min-h-screen bg-transparent w-full flex flex-col justify-center relative overflow-hidden py-20 px-6 lg:px-24 z-10">
 
       {/* Header Block */}
       <div className="max-w-7xl w-full mx-auto relative z-10 mb-12">
@@ -142,23 +124,23 @@ export default function Projects() {
             onClick={() => setActiveProject(project)}
             onMouseEnter={() => setHoveredId(project.id)}
             onMouseLeave={() => setHoveredId(null)}
-            className="group cursor-pointer py-10 flex flex-col md:flex-row md:items-center justify-between relative overflow-hidden transition-all duration-500"
+            className="group cursor-pointer py-8 md:py-10 flex flex-col md:flex-row md:items-center justify-between relative overflow-hidden transition-all duration-500"
           >
             <div className="absolute inset-0 bg-neutral-50/60 -translate-x-full group-hover:translate-x-0 transition-transform duration-700 cubic-bezier(0.16, 1, 0.3, 1) z-0" />
 
-            <div className="flex items-baseline gap-8 relative z-10 pointer-events-none">
-              <span className="text-xl font-mono font-bold text-purple-600/80 tracking-widest">{project.id}</span>
+            <div className="flex items-baseline gap-4 md:gap-8 relative z-10 pointer-events-none">
+              <span className="text-lg md:text-xl font-mono font-bold text-purple-600/80 tracking-widest">{project.id}</span>
               <div className="relative">
-                <motion.h3 layoutId={`title-${project.id}`} className="text-3xl sm:text-5xl font-black text-black tracking-tight transition-transform duration-500 group-hover:translate-x-2">
+                <motion.h3 layoutId={`title-${project.id}`} className="text-2xl sm:text-3xl md:text-5xl font-black text-black tracking-tight transition-transform duration-500 group-hover:translate-x-2">
                   {project.title}
                 </motion.h3>
-                <motion.div className="absolute -bottom-2 left-0 h-[1px] bg-black" initial={{ width: "0%" }} animate={{ width: hoveredId === project.id ? "100%" : "0%" }} transition={{ duration: 0.4, ease: "easeInOut" }} />
+                <motion.div className="absolute -bottom-1 left-0 h-[1px] bg-black" initial={{ width: "0%" }} animate={{ width: hoveredId === project.id ? "100%" : "0%" }} transition={{ duration: 0.4, ease: "easeInOut" }} />
               </div>
             </div>
 
             <div className="mt-4 md:mt-0 flex flex-col md:items-end relative z-10 pointer-events-none">
-              <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-400 mb-1">{project.category}</span>
-              <p className="text-gray-500 font-light text-sm max-w-sm md:text-right leading-relaxed">{project.shortDesc}</p>
+              <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] font-bold text-neutral-400 mb-1">{project.category}</span>
+              <p className="text-gray-500 font-light text-xs md:text-sm max-w-sm md:text-right leading-relaxed">{project.shortDesc}</p>
             </div>
           </div>
         ))}
@@ -187,22 +169,22 @@ function ModalWindow({ activeProject, onClose }) {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 30, scale: 0.98 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="relative w-[90vw] max-w-7xl h-[90vh] bg-neutral-900 overflow-y-auto rounded-2xl shadow-2xl text-white scrollbar-none"
+        className="relative w-full h-[100dvh] md:w-[90vw] md:h-[90vh] md:max-w-7xl bg-neutral-900 overflow-y-auto md:rounded-2xl shadow-2xl text-white scrollbar-none"
       >
         {/* Fixed Sticky Close Controls */}
-        <button onClick={onClose} className="fixed top-8 right-[7vw] z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-white text-white hover:text-black transition-all duration-300 flex items-center justify-center text-lg shadow-xl">
+        <button onClick={onClose} className="fixed top-4 right-4 md:top-8 md:right-[7vw] z-50 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white text-white hover:text-black transition-all duration-300 flex items-center justify-center text-lg shadow-xl">
           ✕
         </button>
 
         {/* SECTION 1: STUDY HEADLINE INFO DESCRIPTION */}
-        <div className="max-w-5xl mx-auto px-8 sm:px-16 pt-20 pb-24">
-          <span className="text-xs uppercase tracking-[0.3em] text-purple-400 font-bold">{activeProject.category}</span>
-          <h3 className="text-5xl sm:text-7xl font-black tracking-tight mt-4 mb-12 uppercase">{activeProject.title}</h3>
+        <div className="max-w-5xl mx-auto px-6 sm:px-16 pt-16 md:pt-20 pb-24">
+          <span className="text-[10px] uppercase tracking-[0.3em] text-purple-400 font-bold">{activeProject.category}</span>
+          <h3 className="text-3xl sm:text-5xl md:text-7xl font-black tracking-tight mt-2 mb-8 md:mb-12 uppercase">{activeProject.title}</h3>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-start">
             <div className="lg:col-span-8 space-y-6">
               <h4 className="text-xs uppercase tracking-widest text-neutral-400 font-black">Overview</h4>
-              <p className="text-neutral-300 font-light leading-relaxed text-lg sm:text-xl">{activeProject.longDesc}</p>
+              <p className="text-neutral-300 font-light leading-relaxed text-base sm:text-xl">{activeProject.longDesc}</p>
             </div>
 
             <div className="lg:col-span-4 space-y-8">
@@ -217,7 +199,7 @@ function ModalWindow({ activeProject, onClose }) {
                 </div>
               </div>
 
-              <div className="pt-2 flex gap-4">
+              <div className="pt-2 flex flex-col sm:flex-row gap-4">
                 <a href={activeProject.demoUrl} className="flex-1 text-center py-3 bg-white text-black text-xs uppercase tracking-[0.2em] font-bold hover:bg-purple-500 hover:text-white transition-all duration-300">
                   Live Preview
                 </a>
@@ -230,8 +212,7 @@ function ModalWindow({ activeProject, onClose }) {
         </div>
 
         {/* SECTION 2: SEQUENTIAL EXPANDING CINEMATIC SCROLL STREAM */}
-        {/* Houses structural cards expanding downstream one after another */}
-        <div className="w-full pb-20 bg-black rounded-b-2xl space-y-0">
+        <div className="w-full pb-20 bg-black rounded-b-none md:rounded-b-2xl space-y-0">
           {activeProject.images.map((imgSrc, index) => (
             <ExpandingImageCard
               key={index}
@@ -247,52 +228,54 @@ function ModalWindow({ activeProject, onClose }) {
   );
 }
 
-/* Individual Image Element tracking view state alterations inside its own tracking box component */
+
+/* Individual Image Element tracking view state alterations */
 function ExpandingImageCard({ src, index, rootScrollRef }) {
   const elementRef = useRef(null);
 
-  // Monitors the entry vectors of this unique card against the scrolling container
   const { scrollYProgress } = useScroll({
     target: elementRef,
     container: rootScrollRef,
     offset: ["start end", "start start"]
   });
 
-  // Smooth architectural layout shifts as element rises out of layout floor
-  const cardWidth = useTransform(scrollYProgress, [0.1, 0.95], ["75%", "100%"]);
-  const cardHeight = useTransform(scrollYProgress, [0.1, 0.95], ["70vh", "90vh"]);
-  const innerGraphicScale = useTransform(scrollYProgress, [0.1, 0.95], [1.12, 1]);
-  const containerRadius = useTransform(scrollYProgress, [0.6, 0.95], ["24px", "0px"]);
+  // REDUCED SCALING: We now cap height at 75vh instead of 100dvh to make it less overwhelming
+  // We also use width 90% to 95% to allow for margins on the sides
+  const cardWidth = useTransform(scrollYProgress, [0.1, 0.95], ["90%", "95%"]);
+  const cardHeight = useTransform(scrollYProgress, [0.1, 0.95], ["40vh", "75vh"]);
+  const innerGraphicScale = useTransform(scrollYProgress, [0.1, 0.95], [1.1, 1]);
+  const containerRadius = useTransform(scrollYProgress, [0.6, 0.95], ["16px", "8px"]);
 
   return (
     <div
       ref={elementRef}
-      className="w-full h-[100vh] flex items-center justify-center relative sticky top-0 overflow-hidden"
+      className="w-full h-[80vh] flex items-center justify-center relative sticky top-0 overflow-hidden"
     >
       <motion.div
         style={{
           width: cardWidth,
           height: cardHeight,
-          borderRadius: containerRadius
+          borderRadius: containerRadius,
+          maxWidth: "1200px" // Added max-width to prevent it from getting too wide on desktop
         }}
         className="relative overflow-hidden bg-neutral-800 shadow-2xl border border-white/5 will-change-transform"
       >
-        {/* Scaled graphic layer ensuring background canvas bounds remain tightly fit inside changing aspect frames */}
         <motion.div style={{ scale: innerGraphicScale }} className="absolute inset-0 w-full h-full">
           <Image
             src={src}
             alt={`Project Showcase Frame ${index + 1}`}
             fill
-            className="object-cover"
-            sizes="100vw"
+            // Tip: change object-cover to object-contain if you want to see the whole image without cropping
+            className="object-cover" 
+            sizes="(max-width: 768px) 90vw, 1200px"
             priority={index === 0}
           />
         </motion.div>
 
         {/* Text Details Banner */}
-        <div className="absolute bottom-8 left-8 bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-lg border border-white/10 z-10 shadow-lg">
-          <p className="text-[10px] font-mono tracking-widest text-purple-400 uppercase">
-            PROJECT DEPLOYMENT // SYSTEM VISUAL 0{index + 1}
+        <div className="absolute bottom-4 left-4 md:bottom-6 md:left-6 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 z-10 shadow-lg">
+          <p className="text-[8px] md:text-[9px] font-mono tracking-widest text-purple-400 uppercase">
+            VISUAL 0{index + 1}
           </p>
         </div>
       </motion.div>
