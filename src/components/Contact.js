@@ -143,15 +143,15 @@ export default function Contact() {
             <div className="space-y-1.5">
               <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">Direct Communication</h4>
               <a href="mailto:" className="text-xs font-medium text-neutral-600 hover:text-purple-600 transition-colors block">
-                hello@yourdomain.com
+                fahadjadoon50@gmail.com
               </a>
             </div>
             
             <div className="space-y-1.5">
               <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">Secure Relays</h4>
               <div className="flex gap-4 text-[11px] font-bold text-neutral-400">
-                <a href="#" className="hover:text-purple-600 transition-colors">GITHUB</a>
-                <a href="#" className="hover:text-purple-600 transition-colors">LINKEDIN</a>
+                <a href="https://github.com/Fahadjadoon" className="hover:text-purple-600 transition-colors">GITHUB</a>
+                <a href="https://www.linkedin.com/in/fahad-jadoon-604612252/" className="hover:text-purple-600 transition-colors">LINKEDIN</a>
               </div>
             </div>
           </div>
