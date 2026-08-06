@@ -16,7 +16,7 @@ export default function TechStack() {
       direction: "left",
       planets: [
         { name: "React.js", x: -190, y: -300, logo: "/logos/Reactjs.png" },
-        { name: "Next.js", x: 180, y: -300, logo: "/logos/NextJs.png" },
+        { name: "Next.js", x: 180, y: -300, logo: "/logos/NextJS.png" },
         { name: "JavaScript", x: 355, y: 5, logo: "/logos/JavaScript.png" },
         { name: "HTML5", x: 190, y: 300, logo: "/logos/HTML5.png" },
         { name: "CSS3", x: -180, y: 300, logo: "/logos/CSS3.png" },
@@ -85,7 +85,7 @@ export default function TechStack() {
                 className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
                 style={{ left: `calc(50% + ${planet.x}px)`, top: `calc(50% + ${planet.y}px)` }}
               >
-                <div className="w-14 h-14 bg-white border-2 border-purple-500 rounded-full flex items-center justify-center shadow-lg hover:scale-125 transition-transform duration-300 animate-bounce-slow overflow-hidden p-2.5">
+                <div className="relative w-14 h-14 bg-white border-2 border-purple-500 rounded-full flex items-center justify-center shadow-lg hover:scale-125 transition-transform duration-300 animate-bounce-slow overflow-hidden p-2.5">
                   <Image 
                     src={planet.logo} 
                     alt={`${planet.name} logo`} 
@@ -94,6 +94,10 @@ export default function TechStack() {
                     className="object-contain w-full h-full"
                   />
                 </div>
+                {/* Hover Label */}
+                <span className="absolute left-1/2 -bottom-8 -translate-x-1/2 px-2.5 py-1 bg-black text-white text-xs font-semibold rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20 shadow-md">
+                  {planet.name}
+                </span>
               </div>
             ))}
           </div>
@@ -115,7 +119,7 @@ export default function TechStack() {
                 className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
                 style={{ left: `calc(50% + ${planet.x}px)`, top: `calc(50% + ${planet.y}px)` }}
               >
-                <div className="w-12 h-12 bg-white border-2 border-purple-500 rounded-full flex items-center justify-center shadow-lg hover:scale-125 transition-transform duration-300 animate-bounce-slow overflow-hidden p-2" style={{ animationDelay: `${idx * 0.2}s` }}>
+                <div className="relative w-12 h-12 bg-white border-2 border-purple-500 rounded-full flex items-center justify-center shadow-lg hover:scale-125 transition-transform duration-300 animate-bounce-slow overflow-hidden p-2" style={{ animationDelay: `${idx * 0.2}s` }}>
                   <Image 
                     src={planet.logo} 
                     alt={`${planet.name} logo`} 
@@ -124,6 +128,10 @@ export default function TechStack() {
                     className="object-contain w-full h-full"
                   />
                 </div>
+                {/* Hover Label */}
+                <span className="absolute left-1/2 -bottom-8 -translate-x-1/2 px-2.5 py-1 bg-black text-white text-xs font-semibold rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20 shadow-md">
+                  {planet.name}
+                </span>
               </div>
             ))}
           </div>
@@ -145,7 +153,7 @@ export default function TechStack() {
                 className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
                 style={{ left: `calc(50% + ${planet.x}px)`, top: `calc(50% + ${planet.y}px)` }}
               >
-                <div className="w-10 h-10 bg-white border-2 border-purple-600 rounded-full flex items-center justify-center shadow-lg hover:scale-125 transition-transform duration-300 animate-bounce-slow overflow-hidden p-1.5" style={{ animationDelay: `${idx * 0.3}s` }}>
+                <div className="relative w-10 h-10 bg-white border-2 border-purple-600 rounded-full flex items-center justify-center shadow-lg hover:scale-125 transition-transform duration-300 animate-bounce-slow overflow-hidden p-1.5" style={{ animationDelay: `${idx * 0.3}s` }}>
                   <Image 
                     src={planet.logo} 
                     alt={`${planet.name} logo`} 
@@ -154,6 +162,10 @@ export default function TechStack() {
                     className="object-contain w-full h-full"
                   />
                 </div>
+                {/* Hover Label */}
+                <span className="absolute left-1/2 -bottom-8 -translate-x-1/2 px-2.5 py-1 bg-black text-white text-xs font-semibold rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20 shadow-md">
+                  {planet.name}
+                </span>
               </div>
             ))}
           </div>
