@@ -79,7 +79,7 @@ const PROJECTS = [
     tags: ["React.js", "Firebase", "Google Auth", "Framer Motion", "Tailwind CSS", "REST API"],
     demoUrl: "",
     githubUrl: "",
-    images: ["/projects/kanban-1.jpg", "/projects/kanban-2.png"],
+    images: ["/projects/Kanban-1.jpg", "/projects/kanban-2.png"],
   },
   {
     id: "05",
@@ -93,10 +93,10 @@ const PROJECTS = [
     demoUrl: "",
     githubUrl: "",
     images: [
-      "/projects/kb-1.png",
-      "/projects/kb-2.png",
-      "/projects/kb-3.png",
-      "/projects/kb-4.png",
+      "/projects/kB-1.png",
+      "/projects/kB-2.png",
+      "/projects/kB-3.png",
+      "/projects/kB-4.png",
     ],
   },
 ];

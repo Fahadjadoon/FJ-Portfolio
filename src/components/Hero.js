@@ -138,7 +138,7 @@ function ProfileImage({ priority = false }) {
   return (
     <div className="relative w-full max-w-[380px] sm:max-w-[440px] lg:max-w-[550px] aspect-[4/5] lg:aspect-[1/1] group">
       <Image
-        src="/my-pic.jpg"
+        src="/my-pic.JPG"
         alt="Fahad Jadoon, frontend engineer"
         fill
         priority={priority}
