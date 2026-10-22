@@ -1,180 +1,360 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+
+import { useState, useRef, useEffect, useCallback } from "react";
+
+// ------------------------------------------------------------------
+// The form submits to /api/contact (see route.js in the next message).
+// We keep the narrative "fill in the blanks" pattern but with real
+// name attributes + real submission.
+// ------------------------------------------------------------------
+const INITIAL_FORM = { name: "", project: "", email: "", message: "" };
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: "", project: "", email: "", message: "" });
+  const [formData, setFormData] = useState(INITIAL_FORM);
   const [activeField, setActiveField] = useState(null);
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
+  const [errorMessage, setErrorMessage] = useState("");
   const [terminalLog, setTerminalLog] = useState("SYSTEM: STANDBY_");
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
   const submitRef = useRef(null);
+  const rafRef = useRef(0);
+  const pointerRef = useRef({ x: 0, y: 0 });
+  const reduceMotionRef = useRef(false);
 
-  // Magnetic button tracking logic
-  const handleMouseMove = (e) => {
-    if (!submitRef.current) return;
-    const rect = submitRef.current.getBoundingClientRect();
-    const x = e.clientX - (rect.left + rect.width / 2);
-    const y = e.clientY - (rect.top + rect.height / 2);
-    
-    const distance = Math.sqrt(x * x + y * y);
-    if (distance < 100) {
-      setMousePos({ x: x * 0.4, y: y * 0.4 });
-    } else {
-      setMousePos({ x: 0, y: 0 });
-    }
-  };
-
-  const handleMouseLeave = () => setMousePos({ x: 0, y: 0 });
-
-  // Dynamic status terminal telemetry log
+  // Detect reduced motion + touch (for magnetic button)
   useEffect(() => {
-    if (activeField) {
-      setTerminalLog(`STREAM: INITIATING_${activeField.toUpperCase()}_LOG`);
-    } else if (Object.values(formData).some(val => val.length > 0)) {
-      setTerminalLog("BUFFER: READY_FOR_DISPATCH");
-    }
-  }, [activeField, formData]);
+    if (typeof window === "undefined") return;
+    reduceMotionRef.current = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setTerminalLog("DISPATCH: TRANSMISSION_SUCCESSFUL");
-    setTimeout(() => {
-      setFormData({ name: "", project: "", email: "", message: "" });
-      setTerminalLog("SYSTEM: CONNECTION_REFRESHED");
-    }, 2000);
+  // Telemetry log reflects real state
+  useEffect(() => {
+    if (status === "sending") return setTerminalLog("DISPATCH: TRANSMITTING_");
+    if (status === "success") return setTerminalLog("DISPATCH: TRANSMISSION_SUCCESSFUL");
+    if (status === "error") return setTerminalLog("DISPATCH: TRANSMISSION_FAILED");
+    if (activeField) return setTerminalLog(`STREAM: INITIATING_${activeField.toUpperCase()}_LOG`);
+    if (Object.values(formData).some((v) => v.trim().length > 0))
+      return setTerminalLog("BUFFER: READY_FOR_DISPATCH");
+    setTerminalLog("SYSTEM: STANDBY_");
+  }, [activeField, formData, status]);
+
+  // ---- Magnetic button (rAF-throttled, no React re-renders) ----
+  const applyPointer = useCallback(() => {
+    const node = submitRef.current;
+    if (!node) return;
+    if (reduceMotionRef.current) {
+      node.style.transform = "translate(0, 0)";
+      return;
+    }
+    node.style.transform = `translate(${pointerRef.current.x}px, ${pointerRef.current.y}px)`;
+  }, []);
+
+  const handleMouseMove = (e) => {
+    if (!submitRef.current || status === "sending") return;
+    // Skip on touch — magnetic hover is pointless there.
+    if (e.pointerType === "touch") return;
+    const rect = submitRef.current.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    pointerRef.current = dist < 100 ? { x: dx * 0.35, y: dy * 0.35 } : { x: 0, y: 0 };
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0;
+      applyPointer();
+    });
   };
+
+  const handleMouseLeave = () => {
+    pointerRef.current = { x: 0, y: 0 };
+    applyPointer();
+  };
+
+  // ---- Submit ----
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (status === "sending") return;
+
+    // Basic client-side validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.project.trim()) {
+      setStatus("error");
+      setErrorMessage("Please fill in your name, email, and project.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setStatus("error");
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
+    setStatus("sending");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Something went wrong. Please try again.");
+      }
+
+      setStatus("success");
+      setFormData(INITIAL_FORM);
+    } catch (err) {
+      setStatus("error");
+      setErrorMessage(err.message || "Something went wrong. Please try again.");
+    }
+  };
+
+  const onChange = (field) => (e) =>
+    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const isSending = status === "sending";
 
   return (
-    /* Swapped background variable from bg-white to bg-transparent for unified layout matrix flows */
-    <section id="contact" className="min-h-screen bg-transparent w-full flex flex-col justify-center relative overflow-hidden py-24 px-6 sm:px-12 lg:px-24 z-0">
-      
-      {/* EDITORIAL HEADER */}
-      <div className="max-w-7xl w-full mx-auto relative z-10 mb-16">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-purple-600 font-semibold mb-2">Connection</h2>
-        <p className="text-2xl font-bold text-black tracking-tight uppercase">Start a Conversation</p>
+    <section
+      id="contact"
+      className="relative w-full flex flex-col justify-center overflow-hidden bg-transparent section-pad px-6 sm:px-10 lg:px-16"
+    >
+      {/* Header */}
+      <div className="mx-auto w-full max-w-7xl mb-10 sm:mb-14">
+        <h2 className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-purple-600 font-semibold mb-2">
+          Connection
+        </h2>
+        <p className="text-xl sm:text-2xl font-bold text-black tracking-tight uppercase">
+          Start a Conversation
+        </p>
         <div className="w-12 h-[1px] bg-black/20 mt-3" />
       </div>
 
-      {/* MAIN CANVAS CONTAINER MATRIX */}
-      <div className="max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10 items-end">
-        
-        {/* Left Side Frame: Interactive Inline Narrative */}
-        <form onSubmit={handleSubmit} className="lg:col-span-8 space-y-10">
-          <div className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-tight text-neutral-800 leading-[1.7] sm:leading-[1.8]">
+      <div className="mx-auto w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+        {/* ---------------------------------------------------------- */}
+        {/* Form (inline narrative)                                     */}
+        {/* ---------------------------------------------------------- */}
+        <form onSubmit={handleSubmit} className="lg:col-span-8 space-y-8" noValidate>
+          <div className="text-xl sm:text-2xl lg:text-3xl font-light tracking-tight text-neutral-800 leading-[1.75] sm:leading-[1.85]">
             Hello, my name is{" "}
-            <span className="relative inline-block min-w-[150px] vertical-baseline mx-1">
-              <input
-                type="text"
-                required
-                placeholder="[ your name ]"
-                value={formData.name}
-                onFocus={() => setActiveField("name")}
-                onBlur={() => setActiveField(null)}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-transparent border-none text-black font-black placeholder-neutral-200 focus:outline-none focus:ring-0 p-0 text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight"
-              />
-              <div className={`absolute bottom-0 left-0 h-[2px] bg-black w-full transition-transform duration-500 origin-left ${activeField === "name" ? "scale-x-100 bg-purple-600" : "scale-x-100 bg-neutral-100"}`} />
-            </span>
+            <BlankInput
+              field="name"
+              label="Your name"
+              value={formData.name}
+              onChange={onChange("name")}
+              onFocus={() => setActiveField("name")}
+              onBlur={() => setActiveField(null)}
+              isActive={activeField === "name"}
+              placeholder="[ your name ]"
+              autoComplete="name"
+              className="uppercase font-black"
+            />
             {" "}and I am looking to develop a{" "}
-            <span className="relative inline-block min-w-[180px] vertical-baseline mx-1">
-              <input
-                type="text"
-                required
-                placeholder="[ project architecture ]"
-                value={formData.project}
-                onFocus={() => setActiveField("project")}
-                onBlur={() => setActiveField(null)}
-                onChange={(e) => setFormData({ ...formData, project: e.target.value })}
-                className="w-full bg-transparent border-none text-black font-black placeholder-neutral-200 focus:outline-none focus:ring-0 p-0 text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight"
-              />
-              <div className={`absolute bottom-0 left-0 h-[2px] w-full transition-transform duration-500 origin-left ${activeField === "project" ? "scale-x-100 bg-purple-600" : "scale-x-100 bg-neutral-100"}`} />
-            </span>
+            <BlankInput
+              field="project"
+              label="Project you want to build"
+              value={formData.project}
+              onChange={onChange("project")}
+              onFocus={() => setActiveField("project")}
+              onBlur={() => setActiveField(null)}
+              isActive={activeField === "project"}
+              placeholder="[ project architecture ]"
+              className="uppercase font-black"
+            />
             . You can reach me via email at{" "}
-            <span className="relative inline-block min-w-[200px] vertical-baseline mx-1">
-              <input
-                type="email"
-                required
-                placeholder="[ your email ]"
-                value={formData.email}
-                onFocus={() => setActiveField("email")}
-                onBlur={() => setActiveField(null)}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-transparent border-none text-black font-black placeholder-neutral-200 focus:outline-none focus:ring-0 p-0 text-2xl sm:text-3xl lg:text-4xl lowercase tracking-tight"
-              />
-              <div className={`absolute bottom-0 left-0 h-[2px] w-full transition-transform duration-500 origin-left ${activeField === "email" ? "scale-x-100 bg-purple-600" : "scale-x-100 bg-neutral-100"}`} />
-            </span>
-            . Additional context for this deployment:{" "}
-            <span className="relative inline-block w-full vertical-baseline mt-4">
+            <BlankInput
+              field="email"
+              label="Your email"
+              type="email"
+              value={formData.email}
+              onChange={onChange("email")}
+              onFocus={() => setActiveField("email")}
+              onBlur={() => setActiveField(null)}
+              isActive={activeField === "email"}
+              placeholder="[ your email ]"
+              autoComplete="email"
+              inputMode="email"
+              className="lowercase font-black"
+            />
+            . Additional context:{" "}
+            <span className="block mt-3">
               <input
                 type="text"
-                placeholder="[ write a brief overview or requirements here... ]"
+                name="message"
+                aria-label="Additional context or requirements"
+                placeholder="[ write a brief overview or requirements here… ]"
                 value={formData.message}
+                onChange={onChange("message")}
                 onFocus={() => setActiveField("message")}
                 onBlur={() => setActiveField(null)}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-transparent border-none text-black font-normal placeholder-neutral-200 focus:outline-none focus:ring-0 p-0 text-lg sm:text-xl leading-relaxed"
+                className="w-full bg-transparent border-none text-base sm:text-lg font-normal text-black placeholder-neutral-300 focus:outline-none focus:ring-0 p-0"
               />
-              <div className={`absolute bottom-[-4px] left-0 h-[1px] w-full transition-transform duration-500 origin-left ${activeField === "message" ? "scale-x-100 bg-purple-600" : "scale-x-100 bg-neutral-100"}`} />
+              <span
+                className={`block h-[1px] w-full transition-colors duration-300 ${
+                  activeField === "message" ? "bg-purple-600" : "bg-neutral-200"
+                }`}
+              />
             </span>
           </div>
 
-          {/* Magnetic Submission Gateway Toggle */}
-          <div className="pt-8 flex items-center gap-6">
-            <button
-              ref={submitRef}
-              type="submit"
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}
-              className="w-14 h-14 rounded-full border border-neutral-200 hover:border-black bg-white text-black flex items-center justify-center transition-colors duration-300 relative z-10 shadow-sm"
+          {/* Submit + status */}
+          <div className="pt-4 flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="flex items-center gap-5">
+              <button
+                ref={submitRef}
+                type="submit"
+                disabled={isSending}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                aria-label={isSending ? "Sending message" : "Send message"}
+                className={`w-14 h-14 rounded-full border flex items-center justify-center transition-colors duration-300 relative z-10 shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 ${
+                  isSending
+                    ? "border-neutral-200 bg-neutral-100 text-neutral-400 cursor-wait"
+                    : status === "success"
+                    ? "border-green-600 bg-green-50 text-green-700"
+                    : "border-neutral-200 hover:border-black bg-white text-black"
+                }`}
+              >
+                {isSending ? (
+                  <span className="w-4 h-4 rounded-full border-2 border-neutral-400 border-t-transparent animate-spin" />
+                ) : status === "success" ? (
+                  <span aria-hidden="true">✓</span>
+                ) : (
+                  <span aria-hidden="true" className="text-lg font-light">→</span>
+                )}
+              </button>
+              <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-bold">
+                {isSending ? "Transmitting…" : "Execute Handshake Request"}
+              </span>
+            </div>
+
+            {/* Live status region (screen-reader friendly) */}
+            <p
+              aria-live="polite"
+              className={`text-xs sm:text-sm font-medium ${
+                status === "error"
+                  ? "text-red-600"
+                  : status === "success"
+                  ? "text-green-700"
+                  : "text-neutral-500"
+              }`}
             >
-              <span className="text-lg font-light transform transition-transform duration-300 hover:translate-x-1">→</span>
-            </button>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-neutral-400 font-bold">
-              Execute Handshake Request
-            </span>
+              {status === "success" && "Message sent. I'll get back to you soon."}
+              {status === "error" && (errorMessage || "Something went wrong.")}
+            </p>
           </div>
         </form>
 
-        {/* RIGHT SIDE DATA COLUMNS */}
-        <div className="lg:col-span-4 lg:border-l lg:border-neutral-100 lg:pl-10 h-full flex flex-col justify-end gap-10 mt-16 lg:mt-0">
-          
-          {/* Digital Routing Targets */}
-          <div className="grid grid-cols-2 lg:grid-cols-1 gap-6">
+        {/* ---------------------------------------------------------- */}
+        {/* Right column: contact info + telemetry                      */}
+        {/* ---------------------------------------------------------- */}
+        <div className="lg:col-span-4 lg:border-l lg:border-neutral-100 lg:pl-10 flex flex-col gap-8">
+          <div className="space-y-6">
             <div className="space-y-1.5">
-              <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">Direct Communication</h4>
-              <a href="mailto:" className="text-xs font-medium text-neutral-600 hover:text-purple-600 transition-colors block">
+              <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">
+                Direct Communication
+              </h4>
+              <a
+                href="mailto:fahadjadoon50@gmail.com"
+                className="text-sm font-medium text-neutral-700 hover:text-purple-600 transition-colors break-all"
+              >
                 fahadjadoon50@gmail.com
               </a>
             </div>
-            
+
             <div className="space-y-1.5">
-              <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">Secure Relays</h4>
-              <div className="flex gap-4 text-[11px] font-bold text-neutral-400">
-                <a href="https://github.com/Fahadjadoon" className="hover:text-purple-600 transition-colors">GITHUB</a>
-                <a href="https://www.linkedin.com/in/fahad-jadoon-604612252/" className="hover:text-purple-600 transition-colors">LINKEDIN</a>
+              <h4 className="text-[9px] uppercase tracking-[0.2em] text-neutral-400 font-black">
+                Secure Relays
+              </h4>
+              <div className="flex gap-5 text-[11px] font-bold text-neutral-500">
+                <a
+                  href="https://github.com/Fahadjadoon"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-purple-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded"
+                >
+                  GITHUB
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/fahad-jadoon-604612252/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-purple-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded"
+                >
+                  LINKEDIN
+                </a>
               </div>
             </div>
           </div>
 
-          {/* Telemetry Stream Monitor */}
-          <div className="w-full bg-neutral-50/70 border border-neutral-100 p-4 font-mono text-[9px] tracking-wide text-neutral-400 select-none space-y-2">
-            <div className="flex justify-between items-center opacity-70 border-b border-neutral-200/50 pb-2">
-              <span className="font-bold text-neutral-500">LIVE_TELEMETRY</span>
+          {/* Telemetry monitor */}
+          <div className="w-full bg-neutral-50/70 border border-neutral-100 p-4 font-mono text-[10px] tracking-wide text-neutral-500 select-none space-y-2">
+            <div className="flex justify-between items-center opacity-80 border-b border-neutral-200/60 pb-2">
+              <span className="font-bold text-neutral-600">LIVE_TELEMETRY</span>
               <div className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-purple-600 animate-ping" />
-                <span className="text-[8px] text-purple-600 font-bold">PORT_8080</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-ping" />
+                <span className="text-[9px] text-purple-600 font-bold">PORT_8080</span>
               </div>
             </div>
-            <div className="font-bold text-neutral-700 truncate uppercase">{terminalLog}</div>
+            <div
+              aria-live="polite"
+              className="font-bold text-neutral-800 truncate uppercase"
+            >
+              {terminalLog}
+            </div>
             <div className="flex justify-between opacity-60">
               <span>LOC: OUTBOUND_EDGE</span>
-              <span>STATUS: 200_OK</span>
+              <span>STATUS: {status === "success" ? "200_OK" : status === "error" ? "500_ERR" : "200_OK"}</span>
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* A single inline blank — used for the narrative form                 */
+/* ------------------------------------------------------------------ */
+function BlankInput({
+  field,
+  label,
+  type = "text",
+  value,
+  onChange,
+  onFocus,
+  onBlur,
+  isActive,
+  placeholder,
+  autoComplete,
+  inputMode,
+  className = "",
+}) {
+  return (
+    <span className="relative inline-block align-baseline min-w-[140px] sm:min-w-[180px] mx-1">
+      <input
+        type={type}
+        name={field}
+        aria-label={label}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        // 16px minimum on mobile prevents iOS auto-zoom on focus
+        className={`w-full bg-transparent border-none text-black placeholder-neutral-300 focus:outline-none focus:ring-0 p-0 text-base sm:text-2xl lg:text-3xl tracking-tight ${className}`}
+      />
+      <span
+        className={`absolute -bottom-0.5 left-0 h-[2px] w-full transition-colors duration-300 ${
+          isActive ? "bg-purple-600" : "bg-neutral-200"
+        }`}
+      />
+    </span>
   );
 }
