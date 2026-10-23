@@ -93,10 +93,10 @@ const PROJECTS = [
     demoUrl: "",
     githubUrl: "",
     images: [
-      "/projects/kB-1.png",
-      "/projects/kB-22.png",
-      "/projects/kB-333.png",
-      "/projects/kB-44.png",
+      "/projects/kb-1.png",
+      "/projects/kb-2.png",
+      "/projects/kb-4.png",
+      "/projects/kb-3.png",
     ],
   },
 ];
